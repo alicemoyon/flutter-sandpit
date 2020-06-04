@@ -113,57 +113,75 @@ Widget myBottomNavBar() {
   );
 }
 
-Widget HomeScreen() {
-  return (SafeArea(
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView(
-        //mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Image.asset(
-            "assets/images/danieloberg3sl9ubYInounsplash.jpg",
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "So many flavours to choose from...",
+class HomeScreen extends StatelessWidget {
+
+  HomeScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return (SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView(
+          //mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset(
+              "assets/images/danieloberg3sl9ubYInounsplash.jpg",
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "So many flavours to choose from...",
+                style: TextStyle(fontSize: 18.0, fontFamily: 'Roboto'),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Text(
+              "Pick your favourite!",
               style: TextStyle(fontSize: 18.0, fontFamily: 'Roboto'),
               textAlign: TextAlign.center,
             ),
-          ),
-          Text(
-            "Pick your favourite!",
-            style: TextStyle(fontSize: 18.0, fontFamily: 'Roboto'),
-            textAlign: TextAlign.center,
-          ),
-          Center(child: IceCreamDropdown()),
-          //TODO pass the state to this so it changes with the dd selection
-          Image.asset("assets/images/${IceCreamDropdownState()._selectedFlavour}.jpg"),
-        ],
+            Center(child: IceCreamDropdown()),
+            //TODO pass the state to this so it changes with the dd selection
+            Image.asset(
+                "assets/images/${IceCreamDropdownState()
+                    ._selectedFlavour}.jpg"),
+          ],
+        ),
       ),
-    ),
-  ));
+    ));
+  }
 }
 
-Widget WeatherScreen() {
-  return FlatButton(
-    child: Text(
-      'Check Weather',
-      style: TextStyle(fontSize: 20),
-    ),
-    onPressed: () {
-      Future.delayed(
-        Duration(seconds: 3),
-        () => 'Sunshine',
-      ).then((value) {
-        print(value);
-      });
-    },
-  );
+class WeatherScreen extends StatelessWidget {
+
+  WeatherScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      child: Text(
+        'Check Weather',
+        style: TextStyle(fontSize: 20),
+      ),
+      onPressed: () {
+        Future.delayed(
+          Duration(seconds: 3),
+              () => 'Sunshine',
+        ).then((value) {
+          print(value);
+        });
+      },
+    );
+  }
 }
 
-Widget BuyScreen() {
-  Map<String, dynamic> flavoursInfo = {
+class BuyScreen extends StatelessWidget {
+  // Constructor
+  BuyScreen();
+
+  // Map containing all the flavours info: Name, Description, Color and Image Location
+  static Map<String, dynamic> flavoursInfo = {
     'strawberry': [
       'Strawberry',
       'A juicy summer flavour',
@@ -203,22 +221,34 @@ Widget BuyScreen() {
   };
 
 // Build the list of FlavourCard widgets from the Map
-  final flavourCards = <FlavourCard>[];
-  var keys = flavoursInfo.keys.toList();
-  print(keys);
 
-  for (num i = 0; i < keys.length; i++) {
-    flavourCards.add(
-      FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
-          flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
-    );
+
+  List<FlavourCard> _makeFlavourCardsList() {
+    var flavourCards = <FlavourCard>[];
+    var keys = flavoursInfo.keys.toList();
+    for (num i = 0; i < keys.length; i++) {
+      flavourCards.add(
+        FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
+            flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
+      );
+    }
+    return flavourCards;
   }
 
+//  Future<List<FlavourCard>> getFlavourCardsList() async {
+//    flavourCards = await makeFlavourCardsList();
+//    return flavourCards;
+//  }
+
 // Display all the cards
-  return ListView.builder(
-    itemCount: keys.length,
-    itemBuilder: (BuildContext context, int index) => flavourCards[index],
-  );
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: flavoursInfo.length,
+      itemBuilder: (BuildContext context, int index) =>
+      _makeFlavourCardsList()[index],
+    );
+  }
 }
 
 //class Person extends StatelessWidget {
