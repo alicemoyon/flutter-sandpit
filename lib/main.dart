@@ -152,10 +152,42 @@ class HomeScreen extends StatelessWidget {
 }
 
 class WeatherScreen extends StatelessWidget {
-  WeatherScreen();
+  //WeatherScreen(); // no need for this
+
+  // Let's store the future in a variable and specify it's return value type:
+  final Future<String> _myFuture = Future.delayed(
+    Duration(seconds: 3),
+    () => 'Sunshine',
+  );
+
+  /// We don't need this part, as we'll 'react' to the future completing
+  /// in the builder part of the FutureBuilder
+//      .then((value) {
+//    print(value);
+//  });
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+      future: _myFuture,
+      // this ignore thingy is not a must,
+      // just gets rid of the complaining about the switch not necessarily returning a widget
+      // but we know it does, so we can just ignore like this:
+      // ignore: missing_return
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.hasError)
+          return Text('some error occured: ${snapshot.error.toString()}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Text('No connection');
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator());
+          case ConnectionState.active:
+          case ConnectionState.done:
+            return Center(child: Text(snapshot.data));
+        }
+      },
+    );
     return FlatButton(
       child: Text(
         'Check Weather',
