@@ -146,9 +146,19 @@ Widget HomeScreen() {
 }
 
 Widget WeatherScreen() {
-  return Text(
-    "This is the weather screen",
-    textDirection: TextDirection.ltr,
+  return FlatButton(
+    child: Text(
+      'Check Weather',
+      style: TextStyle(fontSize: 20),
+    ),
+    onPressed: () {
+      Future.delayed(
+        Duration(seconds: 3),
+        () => 'Sunshine',
+      ).then((value) {
+        print(value);
+      });
+    },
   );
 }
 
