@@ -153,10 +153,52 @@ Widget WeatherScreen() {
 }
 
 Widget BuyScreen() {
-  return Text(
-    "This is the buy ice cream screen",
-    textDirection: TextDirection.ltr,
+  Map<String, dynamic> flavoursInfo = {
+    'strawberry': [
+      'Strawberry',
+      'A juicy summer flavour',
+      Colors.red,
+      'assets/images/strawberry.jpg',
+    ],
+    'raspberry': [
+      'Raspberry',
+      'The tastiest berry punch',
+      Colors.pink,
+      'assets/images/raspberry.jpg',
+    ],
+    'lemon': [
+      'Lemon',
+      'Zingy and refreshing sorbet',
+      Colors.yellow,
+      'assets/images/lemon.jpg',
+    ],
+    'mango': [
+      'Mango',
+      'Sweet and exotic',
+      Colors.orange,
+      'assets/images/mango.jpg',
+    ]
+  };
+
+// Build the list of FlavourCard widgets from the Map
+  final flavourCards = <FlavourCard>[];
+  var keys = flavoursInfo.keys.toList();
+  print(keys);
+
+  for (num i = 0; i < keys.length; i++) {
+    flavourCards.add(
+      FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
+          flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
+    );
+
+  }
+
+// Display all the cards
+  return ListView.builder(
+    itemCount: keys.length,
+    itemBuilder: (BuildContext context, int index) => flavourCards[index],
   );
+
 }
 
 //class Person extends StatelessWidget {
