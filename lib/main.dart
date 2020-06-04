@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fluttersandpit/flavourcard.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
   runApp(MyApp());
@@ -114,7 +114,6 @@ Widget myBottomNavBar() {
 }
 
 class HomeScreen extends StatelessWidget {
-
   HomeScreen();
 
   @override
@@ -144,8 +143,7 @@ class HomeScreen extends StatelessWidget {
             Center(child: IceCreamDropdown()),
             //TODO pass the state to this so it changes with the dd selection
             Image.asset(
-                "assets/images/${IceCreamDropdownState()
-                    ._selectedFlavour}.jpg"),
+                "assets/images/${IceCreamDropdownState()._selectedFlavour}.jpg"),
           ],
         ),
       ),
@@ -154,7 +152,6 @@ class HomeScreen extends StatelessWidget {
 }
 
 class WeatherScreen extends StatelessWidget {
-
   WeatherScreen();
 
   @override
@@ -165,9 +162,14 @@ class WeatherScreen extends StatelessWidget {
         style: TextStyle(fontSize: 20),
       ),
       onPressed: () {
+        /// This is actually correct: you wait for 3s,
+        /// then return some value and print that
+        ///
+        /// So basically, you have your Future ready to use,
+        /// e.g. in a FutureBuilder... See next commit
         Future.delayed(
           Duration(seconds: 3),
-              () => 'Sunshine',
+          () => 'Sunshine',
         ).then((value) {
           print(value);
         });
@@ -222,7 +224,6 @@ class BuyScreen extends StatelessWidget {
 
 // Build the list of FlavourCard widgets from the Map
 
-
   List<FlavourCard> _makeFlavourCardsList() {
     var flavourCards = <FlavourCard>[];
     var keys = flavoursInfo.keys.toList();
@@ -246,7 +247,7 @@ class BuyScreen extends StatelessWidget {
     return ListView.builder(
       itemCount: flavoursInfo.length,
       itemBuilder: (BuildContext context, int index) =>
-      _makeFlavourCardsList()[index],
+          _makeFlavourCardsList()[index],
     );
   }
 }
