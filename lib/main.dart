@@ -177,6 +177,18 @@ Widget BuyScreen() {
       'Sweet and exotic',
       Colors.orange,
       'assets/images/mango.jpg',
+    ],
+    'chocolate': [
+      'Chocolate',
+      'A comforting classic',
+      Colors.brown,
+      'assets/images/chocolate.jpg',
+    ],
+    'mint': [
+      'Mint',
+      'Fresh herbal flavours',
+      Colors.teal,
+      'assets/images/mint.jpg',
     ]
   };
 
@@ -190,7 +202,6 @@ Widget BuyScreen() {
       FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
           flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
     );
-
   }
 
 // Display all the cards
@@ -198,7 +209,6 @@ Widget BuyScreen() {
     itemCount: keys.length,
     itemBuilder: (BuildContext context, int index) => flavourCards[index],
   );
-
 }
 
 //class Person extends StatelessWidget {
