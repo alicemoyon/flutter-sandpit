@@ -171,14 +171,16 @@ class WeatherScreen extends StatelessWidget {
             return Text("No connection");
           case ConnectionState.waiting:
             return Center(
-              child: Column(children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("fetching the weather"),
-                ),
-                CircularProgressIndicator(),
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("fetching the weather"),
+                  ),
+                  CircularProgressIndicator(),
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
             );
           case ConnectionState.active:
           case ConnectionState.done:
@@ -186,19 +188,22 @@ class WeatherScreen extends StatelessWidget {
         }
       },
     );
-    return FlatButton(
-      child: Text(
-        'Check Weather',
-        style: TextStyle(fontSize: 20),
-      ),
-      onPressed: () {
-        Future.delayed(
-          Duration(seconds: 3),
-          () => 'Sunshine',
-        );
-      },
-    );
   }
+
+  // BUTTON CODE - ADD LATER - FIND A WAY TO TRIGGER FUTUREBUILDER FROM THIS BUTTON
+//    return FlatButton(
+//      child: Text(
+//        'Check Weather',
+//        style: TextStyle(fontSize: 20),
+//      ),
+//      onPressed: () {
+//        Future.delayed(
+//          Duration(seconds: 3),
+//          () => 'Sunshine',
+//        );
+//      },
+//    );
+//  }
 
 //  @override
 //  Widget build(BuildContext context) {
@@ -218,9 +223,6 @@ class WeatherScreen extends StatelessWidget {
 }
 
 class BuyScreen extends StatelessWidget {
-  // Constructor
-  BuyScreen();
-
   // Map containing all the flavours info: Name, Description, Color and Image Location
   static Map<String, dynamic> flavoursInfo = {
     'strawberry': [
@@ -261,8 +263,17 @@ class BuyScreen extends StatelessWidget {
     ]
   };
 
+  //TODO this works but what I'm trying to do is to only show the cards once the images are fully loaded.
+  //TODO I tried without the future.delayed, turning _makeFlavourCardsList() into an async function returning
+  //TODO a future into _flavourCards but that doesn't seem to wait until the image is loaded.
+  //TODO also....why the green lines and info msg??
+  final Future<List<FlavourCard>> _flavourCards = Future.delayed(
+    Duration(seconds: 7),
+    () => _makeFlavourCardsList(),
+  );
+
 // Build the list of FlavourCard widgets from the Map
-  List<FlavourCard> _makeFlavourCardsList() {
+  static List<FlavourCard> _makeFlavourCardsList() {
     var flavourCards = <FlavourCard>[];
     var keys = flavoursInfo.keys.toList();
     for (num i = 0; i < keys.length; i++) {
@@ -274,32 +285,41 @@ class BuyScreen extends StatelessWidget {
     return flavourCards;
   }
 
-// ATTEMPTS AT USING FUTURES TO MAKE THE LIST OF CARDS
-//  Future<List<FlavourCard>> _makeFlavourCardsList() async {
-//    var flavourCards = <FlavourCard>[];
-//    var keys = flavoursInfo.keys.toList();
-//    await Future.delayed(Duration(seconds: 3), () => {
-//    for (num i = 0; i < keys.length; i++) {
-//      flavourCards.add(
-//        FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
-//            flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
-//      )
-//    } });
-//    return flavourCards;
-//  }
-
-//  Future<List<FlavourCard>> getFlavourCardsList() async {
-//    flavourCards = await makeFlavourCardsList();
-//    return flavourCards;
-//  }
-
-// Display all the cards
+  // Display the cards once they are all ready
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: flavoursInfo.length,
-      itemBuilder: (BuildContext context, int index) =>
-          _makeFlavourCardsList()[index],
+    return FutureBuilder<List<FlavourCard>>(
+      future: _flavourCards,
+      //ignore: missing_return,
+      builder:
+          (BuildContext context, AsyncSnapshot<List<FlavourCard>> snapshot) {
+        if (snapshot.hasError)
+          return Text("Error: ${snapshot.error.toString()}");
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Text("No connection");
+          case ConnectionState.waiting:
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("fetching the flavour cards"),
+                  ),
+                  CircularProgressIndicator(),
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            );
+          case ConnectionState.active:
+          case ConnectionState.done:
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  snapshot.data[index],
+            );
+        }
+      },
     );
   }
 }
