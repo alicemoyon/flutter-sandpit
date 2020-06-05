@@ -277,11 +277,11 @@ class BuyScreen extends StatelessWidget {
     var flavourCards = <FlavourCard>[];
     var keys = flavoursInfo.keys.toList();
     for (num i = 0; i < keys.length; i++) {
-      flavourCards.add(
-        FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
-            flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
-      );
-    }
+        flavourCards.add(
+          FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
+              flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
+        );
+      }
     return flavourCards;
   }
 
