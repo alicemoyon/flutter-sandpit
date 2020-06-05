@@ -210,6 +210,25 @@ class WeatherScreen extends StatelessWidget {
   }
 }
 
+/// Moving on:
+/// - Maybe try the same thing for the Listview: you can totally wrap it in a FutureBuilder,
+/// and while that loads display something else (e.g. some ProgressIndicator)
+///
+/// - Originally, I that's pretty much what I intended with this exercise:
+/// create your own futures (quickest through a dummy Future.delayed then some data loading through REST or persistence APIs)
+///
+/// I think next just play around with FutureBuilders as described in Exercise 5 and 6
+/// and keep your futures simple enough.
+///
+/// (For loads of data, there might be more complex solutions, but don't worry about those.
+/// For example you could have an "infinite scroll" experience
+/// with data coming in maybe in a paginated fassion,
+/// for that you would would not really be able to use FutureBuilders directly for every single item,
+/// rather use:
+/// - something called Completers or
+/// - have the data in a Stream.
+/// Again, don't go this way, just have 1-2 futures without the infiniteness, or load by single item effect)
+
 class BuyScreen extends StatelessWidget {
   // Constructor
   BuyScreen();
