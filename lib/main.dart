@@ -114,7 +114,6 @@ Widget myBottomNavBar() {
 }
 
 class HomeScreen extends StatelessWidget {
-
   HomeScreen();
 
   @override
@@ -144,8 +143,7 @@ class HomeScreen extends StatelessWidget {
             Center(child: IceCreamDropdown()),
             //TODO pass the state to this so it changes with the dd selection
             Image.asset(
-                "assets/images/${IceCreamDropdownState()
-                    ._selectedFlavour}.jpg"),
+                "assets/images/${IceCreamDropdownState()._selectedFlavour}.jpg"),
           ],
         ),
       ),
@@ -154,25 +152,34 @@ class HomeScreen extends StatelessWidget {
 }
 
 class WeatherScreen extends StatelessWidget {
-
   final Future<String> _myFuture = Future.delayed(
     Duration(seconds: 10),
-        () => 'Sunshine',
+    () => 'Sunshine',
   );
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
       future: _myFuture,
+      initialData: "initial data",
       //ignore: missing_return,
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         if (snapshot.hasError)
           return Text("Error: ${snapshot.error.toString()}");
-        switch(snapshot.connectionState){
+        switch (snapshot.connectionState) {
           case ConnectionState.none:
             return Text("No connection");
           case ConnectionState.waiting:
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: Column(children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("fetching the weather"),
+                ),
+                CircularProgressIndicator(),
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,),
+            );
           case ConnectionState.active:
           case ConnectionState.done:
             return Center(child: Text(snapshot.data));
@@ -187,7 +194,7 @@ class WeatherScreen extends StatelessWidget {
       onPressed: () {
         Future.delayed(
           Duration(seconds: 3),
-              () => 'Sunshine',
+          () => 'Sunshine',
         );
       },
     );
@@ -259,14 +266,13 @@ class BuyScreen extends StatelessWidget {
     var flavourCards = <FlavourCard>[];
     var keys = flavoursInfo.keys.toList();
     for (num i = 0; i < keys.length; i++) {
-        flavourCards.add(
-          FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
-              flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
-        );
-      }
+      flavourCards.add(
+        FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
+            flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
+      );
+    }
     return flavourCards;
   }
-
 
 // ATTEMPTS AT USING FUTURES TO MAKE THE LIST OF CARDS
 //  Future<List<FlavourCard>> _makeFlavourCardsList() async {
@@ -293,7 +299,7 @@ class BuyScreen extends StatelessWidget {
     return ListView.builder(
       itemCount: flavoursInfo.length,
       itemBuilder: (BuildContext context, int index) =>
-      _makeFlavourCardsList()[index],
+          _makeFlavourCardsList()[index],
     );
   }
 }
