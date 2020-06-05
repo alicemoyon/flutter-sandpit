@@ -155,10 +155,30 @@ class HomeScreen extends StatelessWidget {
 
 class WeatherScreen extends StatelessWidget {
 
-  WeatherScreen();
+  final Future<String> _myFuture = Future.delayed(
+    Duration(seconds: 10),
+        () => 'Sunshine',
+  );
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+      future: _myFuture,
+      //ignore: missing_return,
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+        if (snapshot.hasError)
+          return Text("Error: ${snapshot.error.toString()}");
+        switch(snapshot.connectionState){
+          case ConnectionState.none:
+            return Text("No connection");
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator());
+          case ConnectionState.active:
+          case ConnectionState.done:
+            return Center(child: Text(snapshot.data));
+        }
+      },
+    );
     return FlatButton(
       child: Text(
         'Check Weather',
@@ -168,12 +188,26 @@ class WeatherScreen extends StatelessWidget {
         Future.delayed(
           Duration(seconds: 3),
               () => 'Sunshine',
-        ).then((value) {
-          print(value);
-        });
+        );
       },
     );
   }
+
+//  @override
+//  Widget build(BuildContext context) {
+//    return FlatButton(
+//      child: Text(
+//        'Check Weather',
+//        style: TextStyle(fontSize: 20),
+//      ),
+//      onPressed: () {
+//        Future.delayed(
+//          Duration(seconds: 3),
+//              () => 'Sunshine',
+//        );
+//      },
+//    );
+//  }
 }
 
 class BuyScreen extends StatelessWidget {
@@ -221,19 +255,32 @@ class BuyScreen extends StatelessWidget {
   };
 
 // Build the list of FlavourCard widgets from the Map
-
-
   List<FlavourCard> _makeFlavourCardsList() {
     var flavourCards = <FlavourCard>[];
     var keys = flavoursInfo.keys.toList();
     for (num i = 0; i < keys.length; i++) {
-      flavourCards.add(
-        FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
-            flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
-      );
-    }
+        flavourCards.add(
+          FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
+              flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
+        );
+      }
     return flavourCards;
   }
+
+
+// ATTEMPTS AT USING FUTURES TO MAKE THE LIST OF CARDS
+//  Future<List<FlavourCard>> _makeFlavourCardsList() async {
+//    var flavourCards = <FlavourCard>[];
+//    var keys = flavoursInfo.keys.toList();
+//    await Future.delayed(Duration(seconds: 3), () => {
+//    for (num i = 0; i < keys.length; i++) {
+//      flavourCards.add(
+//        FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
+//            flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
+//      )
+//    } });
+//    return flavourCards;
+//  }
 
 //  Future<List<FlavourCard>> getFlavourCardsList() async {
 //    flavourCards = await makeFlavourCardsList();
