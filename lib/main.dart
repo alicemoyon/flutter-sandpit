@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fluttersandpit/flavourcard.dart';
+import 'package:fluttersandpit/homescreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -44,53 +45,6 @@ class MainWidget extends StatelessWidget {
   }
 }
 
-class IceCreamDropdown extends StatefulWidget {
-  IceCreamDropdown({Key key}) : super(key: key);
-
-  @override
-  IceCreamDropdownState createState() => IceCreamDropdownState();
-}
-
-class IceCreamDropdownState extends State<IceCreamDropdown> {
-  static List<String> _flavours = [
-    "strawberry",
-    "vanilla",
-    "blueberry",
-    "lime",
-    "chocolate",
-    "pistachio",
-    "coconut",
-    "mango",
-    "raspberry",
-    "orange",
-    "banana",
-    "toffee",
-    "coffee",
-  ];
-  String _selectedFlavour = _flavours[0];
-
-  _displaySelection(String flavour) {
-    setState(() {
-      _selectedFlavour = flavour;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: _selectedFlavour,
-      items: _flavours.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value,
-              style: TextStyle(fontSize: 18.0, fontFamily: 'Roboto')),
-        );
-      }).toList(),
-      onChanged: _displaySelection,
-    );
-  }
-}
-
 Widget myBottomNavBar() {
   return Material(
     color: Colors.teal,
@@ -113,43 +67,6 @@ Widget myBottomNavBar() {
   );
 }
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return (SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          //mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              "assets/images/danieloberg3sl9ubYInounsplash.jpg",
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "So many flavours to choose from...",
-                style: TextStyle(fontSize: 18.0, fontFamily: 'Roboto'),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Text(
-              "Pick your favourite!",
-              style: TextStyle(fontSize: 18.0, fontFamily: 'Roboto'),
-              textAlign: TextAlign.center,
-            ),
-            Center(child: IceCreamDropdown()),
-            //TODO pass the state to this so it changes with the dd selection
-            Image.asset(
-                "assets/images/${IceCreamDropdownState()._selectedFlavour}.jpg"),
-          ],
-        ),
-      ),
-    ));
-  }
-}
 
 class WeatherScreen extends StatelessWidget {
   final Future<String> _myFuture = Future.delayed(
@@ -185,6 +102,7 @@ class WeatherScreen extends StatelessWidget {
           case ConnectionState.active:
           case ConnectionState.done:
             return Center(child: Text(snapshot.data));
+          default: return Center(child: Text(snapshot.data));
         }
       },
     );
@@ -290,7 +208,6 @@ class BuyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<List<FlavourCard>>(
       future: _flavourCards,
-      //ignore: missing_return,
       builder:
           (BuildContext context, AsyncSnapshot<List<FlavourCard>> snapshot) {
         if (snapshot.hasError)
@@ -318,6 +235,7 @@ class BuyScreen extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) =>
                   snapshot.data[index],
             );
+          default: return Text("catch all");
         }
       },
     );
