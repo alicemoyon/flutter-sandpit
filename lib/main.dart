@@ -182,16 +182,15 @@ class BuyScreen extends StatelessWidget {
   };
 
   //TODO this works but what I'm trying to do is to only show the cards once the images are fully loaded.
-  //TODO I tried without the future.delayed, turning _makeFlavourCardsList() into an async function returning
-  //TODO a future into _flavourCards but that doesn't seem to wait until the image is loaded.
-  //TODO also....why the green lines and info msg??
-  final Future<List<FlavourCard>> _flavourCards = Future.delayed(
-    Duration(seconds: 7),
-    () => _makeFlavourCardsList(),
-  );
+  //final Future<List<FlavourCard>> _flavourCards = await _makeFlavourCardsList();
+
+  static Future<List<FlavourCard>> getFlavourCardsList() async {
+    List<FlavourCard> flavourCards = await _makeFlavourCardsList();
+    return flavourCards;
+  }
 
 // Build the list of FlavourCard widgets from the Map
-  static List<FlavourCard> _makeFlavourCardsList() {
+  static Future<List<FlavourCard>> _makeFlavourCardsList() async {
     var flavourCards = <FlavourCard>[];
     var keys = flavoursInfo.keys.toList();
     for (num i = 0; i < keys.length; i++) {
@@ -202,6 +201,8 @@ class BuyScreen extends StatelessWidget {
       }
     return flavourCards;
   }
+
+  final Future<List<FlavourCard>> _flavourCards = getFlavourCardsList();
 
   // Display the cards once they are all ready
   @override
