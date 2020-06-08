@@ -3,6 +3,7 @@ import 'package:fluttersandpit/weatherscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fluttersandpit/homescreen.dart';
 
+import 'aq_screen.dart';
 import 'buy_screen.dart';
 
 void main() {
@@ -23,7 +24,7 @@ class MainWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           leading: Center(
@@ -39,6 +40,7 @@ class MainWidget extends StatelessWidget {
             HomeScreen(),
             WeatherScreen(),
             BuyScreen(),
+            AqScreen(),
           ],
         ),
         bottomNavigationBar: myBottomNavBar(),
@@ -64,6 +66,10 @@ Widget myBottomNavBar() {
           FontAwesomeIcons.iceCream,
         ),
         child: Text('Buy'),
+      ),
+      Tab(
+        icon: FaIcon(FontAwesomeIcons.globe,),
+        child: Text('Country'),
       ),
     ]),
   );
