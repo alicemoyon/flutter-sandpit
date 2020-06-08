@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttersandpit/flavourcard.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fluttersandpit/flavourcard.dart';
+import 'package:fluttersandpit/homescreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -44,53 +46,6 @@ class MainWidget extends StatelessWidget {
   }
 }
 
-class IceCreamDropdown extends StatefulWidget {
-  IceCreamDropdown({Key key}) : super(key: key);
-
-  @override
-  IceCreamDropdownState createState() => IceCreamDropdownState();
-}
-
-class IceCreamDropdownState extends State<IceCreamDropdown> {
-  static List<String> _flavours = [
-    "strawberry",
-    "vanilla",
-    "blueberry",
-    "lime",
-    "chocolate",
-    "pistachio",
-    "coconut",
-    "mango",
-    "raspberry",
-    "orange",
-    "banana",
-    "toffee",
-    "coffee",
-  ];
-  String _selectedFlavour = _flavours[0];
-
-  _displaySelection(String flavour) {
-    setState(() {
-      _selectedFlavour = flavour;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: _selectedFlavour,
-      items: _flavours.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value,
-              style: TextStyle(fontSize: 18.0, fontFamily: 'Roboto')),
-        );
-      }).toList(),
-      onChanged: _displaySelection,
-    );
-  }
-}
-
 Widget myBottomNavBar() {
   return Material(
     color: Colors.teal,
@@ -113,50 +68,11 @@ Widget myBottomNavBar() {
   );
 }
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return (SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          //mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              "assets/images/danieloberg3sl9ubYInounsplash.jpg",
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "So many flavours to choose from...",
-                style: TextStyle(fontSize: 18.0, fontFamily: 'Roboto'),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Text(
-              "Pick your favourite!",
-              style: TextStyle(fontSize: 18.0, fontFamily: 'Roboto'),
-              textAlign: TextAlign.center,
-            ),
-            Center(child: IceCreamDropdown()),
-            //TODO pass the state to this so it changes with the dd selection
-            Image.asset(
-                "assets/images/${IceCreamDropdownState()._selectedFlavour}.jpg"),
-          ],
-        ),
-      ),
-    ));
-  }
-}
 
 class WeatherScreen extends StatelessWidget {
-  //WeatherScreen(); // no need for this
-
   final Future<String> _myFuture = Future.delayed(
     Duration(seconds: 10),
-        () => 'Sunshine',
+    () => 'Sunshine',
   );
 
   /// We don't need this part, as we'll 'react' to the future completing
@@ -169,39 +85,50 @@ class WeatherScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
       future: _myFuture,
+      initialData: "initial data",
       //ignore: missing_return,
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         if (snapshot.hasError)
           return Text("Error: ${snapshot.error.toString()}");
-        switch(snapshot.connectionState){
+        switch (snapshot.connectionState) {
           case ConnectionState.none:
             return Text("No connection");
           case ConnectionState.waiting:
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("fetching the weather"),
+                  ),
+                  CircularProgressIndicator(),
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            );
           case ConnectionState.active:
           case ConnectionState.done:
             return Center(child: Text(snapshot.data));
+          default: return Center(child: Text(snapshot.data));
         }
       },
     );
-    return FlatButton(
-      child: Text(
-        'Check Weather',
-        style: TextStyle(fontSize: 20),
-      ),
-      onPressed: () {
-        /// This is actually correct: you wait for 3s,
-        /// then return some value and print that
-        ///
-        /// So basically, you have your Future ready to use,
-        /// e.g. in a FutureBuilder... See next commit
-        Future.delayed(
-          Duration(seconds: 3),
-              () => 'Sunshine',
-        );
-      },
-    );
   }
+
+  // BUTTON CODE - ADD LATER - FIND A WAY TO TRIGGER FUTUREBUILDER FROM THIS BUTTON
+//    return FlatButton(
+//      child: Text(
+//        'Check Weather',
+//        style: TextStyle(fontSize: 20),
+//      ),
+//      onPressed: () {
+//        Future.delayed(
+//          Duration(seconds: 3),
+//          () => 'Sunshine',
+//        );
+//      },
+//    );
+//  }
 
 //  @override
 //  Widget build(BuildContext context) {
@@ -240,9 +167,6 @@ class WeatherScreen extends StatelessWidget {
 /// Again, don't go this way, just have 1-2 futures without the infiniteness, or load by single item effect)
 
 class BuyScreen extends StatelessWidget {
-  // Constructor
-  BuyScreen();
-
   // Map containing all the flavours info: Name, Description, Color and Image Location
   static Map<String, dynamic> flavoursInfo = {
     'strawberry': [
@@ -283,8 +207,16 @@ class BuyScreen extends StatelessWidget {
     ]
   };
 
+  //TODO this works but what I'm trying to do is to only show the cards once the images are fully loaded.
+  //final Future<List<FlavourCard>> _flavourCards = await _makeFlavourCardsList();
+
+  static Future<List<FlavourCard>> getFlavourCardsList() async {
+    List<FlavourCard> flavourCards = await _makeFlavourCardsList();
+    return flavourCards;
+  }
+
 // Build the list of FlavourCard widgets from the Map
-  List<FlavourCard> _makeFlavourCardsList() {
+  static Future<List<FlavourCard>> _makeFlavourCardsList() async {
     var flavourCards = <FlavourCard>[];
     var keys = flavoursInfo.keys.toList();
     for (num i = 0; i < keys.length; i++) {
@@ -296,33 +228,43 @@ class BuyScreen extends StatelessWidget {
     return flavourCards;
   }
 
+  final Future<List<FlavourCard>> _flavourCards = getFlavourCardsList();
 
-// ATTEMPTS AT USING FUTURES TO MAKE THE LIST OF CARDS
-//  Future<List<FlavourCard>> _makeFlavourCardsList() async {
-//    var flavourCards = <FlavourCard>[];
-//    var keys = flavoursInfo.keys.toList();
-//    await Future.delayed(Duration(seconds: 3), () => {
-//    for (num i = 0; i < keys.length; i++) {
-//      flavourCards.add(
-//        FlavourCard(flavoursInfo[keys[i]][0], flavoursInfo[keys[i]][1],
-//            flavoursInfo[keys[i]][2], flavoursInfo[keys[i]][3]),
-//      )
-//    } });
-//    return flavourCards;
-//  }
-
-//  Future<List<FlavourCard>> getFlavourCardsList() async {
-//    flavourCards = await makeFlavourCardsList();
-//    return flavourCards;
-//  }
-
-// Display all the cards
+  // Display the cards once they are all ready
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: flavoursInfo.length,
-      itemBuilder: (BuildContext context, int index) =>
-          _makeFlavourCardsList()[index],
+    return FutureBuilder<List<FlavourCard>>(
+      future: _flavourCards,
+      builder:
+          (BuildContext context, AsyncSnapshot<List<FlavourCard>> snapshot) {
+        if (snapshot.hasError)
+          return Text("Error: ${snapshot.error.toString()}");
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Text("No connection");
+          case ConnectionState.waiting:
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("fetching the flavour cards"),
+                  ),
+                  CircularProgressIndicator(),
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            );
+          case ConnectionState.active:
+          case ConnectionState.done:
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  snapshot.data[index],
+            );
+          default: return Text("catch all");
+        }
+      },
     );
   }
 }
