@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttersandpit/country_info_screen.dart';
-
 import 'country.dart';
 import 'networking.dart';
 
 var url = 'https://api.openaq.org/v1/countries?limit=100';
 
-class AqScreen extends StatelessWidget {
+class AqScreen extends StatefulWidget {
   static Future<List<Country>> getCountries() async {
     NetworkHelper nh = NetworkHelper(url);
     var countryData = await nh.getData();
@@ -28,7 +27,13 @@ class AqScreen extends StatelessWidget {
     return countries;
   }
 
-  final Future<List> countries = getCountries();
+  @override
+  _AqScreenState createState() => _AqScreenState();
+}
+
+class _AqScreenState extends State<AqScreen> {
+
+  final Future<List> countries = AqScreen.getCountries();
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +67,14 @@ class AqScreen extends StatelessWidget {
                     if (snapshot.data[index].name != null) {
                       return ListTile(
                         title: Text(snapshot.data[index].name),
+                        trailing: FlatButton(
+                          child: Icon(snapshot.data[index].getFave() ? Icons.favorite : Icons.favorite_border, color: Colors.red,),
+                          onPressed: () {
+                            setState(() {
+                              snapshot.data[index].toggleFave();
+                            });
+                          },
+                        ),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -75,6 +88,14 @@ class AqScreen extends StatelessWidget {
                     } else {
                       return ListTile(
                         title: Text(snapshot.data[index].code),
+                        trailing: FlatButton(
+                          child: Icon(snapshot.data[index].getFave() ? Icons.favorite : Icons.favorite_border, color: Colors.red,),
+                          onPressed: () {
+                            setState(() {
+                              snapshot.data[index].toggleFave();
+                            });
+                          },
+                        ),
                         onTap: () {
                           Navigator.push(
                             context,

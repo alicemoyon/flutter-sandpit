@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'country.dart';
 
 class CountryInfoScreen extends StatelessWidget {
@@ -7,7 +6,6 @@ class CountryInfoScreen extends StatelessWidget {
   CountryInfoScreen(this.country);
 
   final Country country;
-
 
   @override
   Widget build(BuildContext context) {

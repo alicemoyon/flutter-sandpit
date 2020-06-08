@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttersandpit/weather_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fluttersandpit/home_screen.dart';
-
 import 'aq_screen.dart';
 import 'buy_screen.dart';
 
