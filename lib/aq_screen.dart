@@ -1,60 +1,99 @@
 import 'package:flutter/material.dart';
+import 'package:fluttersandpit/country_info_screen.dart';
 
+import 'country.dart';
 import 'networking.dart';
 
 var url = 'https://api.openaq.org/v1/countries?limit=100';
 
 class AqScreen extends StatelessWidget {
-  static Future<List> getCountries() async {
+  static Future<List<Country>> getCountries() async {
     NetworkHelper nh = NetworkHelper(url);
-
     var countryData = await nh.getData();
-    List countryInfo = countryData['results'];
-    return countryInfo;
+    List<dynamic> countryInfo = countryData['results'];
+
+    List<Country> countries = [];
+    countryInfo.forEach((element) {
+      countries.add(
+        Country(
+          element['code'],
+          element['count'],
+          element['locations'],
+          element['cities'],
+          element['name'],
+        ),
+      );
+    });
+
+    return countries;
   }
 
-  final Future<List> countryInfo = getCountries();
+  final Future<List> countries = getCountries();
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: countryInfo,
-        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-          if (snapshot.hasError)
-            return Text("Error: ${snapshot.error.toString()}");
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return Text("No connection");
-            case ConnectionState.waiting:
-              return Center(
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("fetching the flavour cards"),
-                    ),
-                    CircularProgressIndicator(),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
-              );
-            case ConnectionState.active:
-            case ConnectionState.done:
-              return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  if (snapshot.data[index]['name'] != null) {
-                    return Text(snapshot.data[index]['name']);
-                  } else {
-                    return Text(snapshot.data[index]['code']);
-                  }
-                },
-              );
-            default:
-              return Text(
-                "something else happened",
-              );
-          }
-        });
+    return SafeArea(
+      child: FutureBuilder(
+          future: countries,
+          builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+            if (snapshot.hasError)
+              return Text("Error: ${snapshot.error.toString()}");
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Text("No connection");
+              case ConnectionState.waiting:
+                return Center(
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("fetching the countries"),
+                      ),
+                      CircularProgressIndicator(),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                );
+              case ConnectionState.active:
+              case ConnectionState.done:
+                return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (snapshot.data[index].name != null) {
+                      return ListTile(
+                        title: Text(snapshot.data[index].name),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CountryInfoScreen(snapshot.data[index]),
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return ListTile(
+                        title: Text(snapshot.data[index].code),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CountryInfoScreen(snapshot.data[index]),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
+                );
+              default:
+                return Text(
+                  "something else happened",
+                );
+            }
+          }),
+    );
   }
 }
