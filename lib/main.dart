@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttersandpit/weatherscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fluttersandpit/flavourcard.dart';
 import 'package:fluttersandpit/homescreen.dart';
@@ -67,78 +68,6 @@ Widget myBottomNavBar() {
   );
 }
 
-
-class WeatherScreen extends StatelessWidget {
-  final Future<String> _myFuture = Future.delayed(
-    Duration(seconds: 10),
-    () => 'Sunshine',
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: _myFuture,
-      initialData: "initial data",
-      //ignore: missing_return,
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-        if (snapshot.hasError)
-          return Text("Error: ${snapshot.error.toString()}");
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-            return Text("No connection");
-          case ConnectionState.waiting:
-            return Center(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("fetching the weather"),
-                  ),
-                  CircularProgressIndicator(),
-                ],
-                mainAxisAlignment: MainAxisAlignment.center,
-              ),
-            );
-          case ConnectionState.active:
-          case ConnectionState.done:
-            return Center(child: Text(snapshot.data));
-          default: return Center(child: Text(snapshot.data));
-        }
-      },
-    );
-  }
-
-  // BUTTON CODE - ADD LATER - FIND A WAY TO TRIGGER FUTUREBUILDER FROM THIS BUTTON
-//    return FlatButton(
-//      child: Text(
-//        'Check Weather',
-//        style: TextStyle(fontSize: 20),
-//      ),
-//      onPressed: () {
-//        Future.delayed(
-//          Duration(seconds: 3),
-//          () => 'Sunshine',
-//        );
-//      },
-//    );
-//  }
-
-//  @override
-//  Widget build(BuildContext context) {
-//    return FlatButton(
-//      child: Text(
-//        'Check Weather',
-//        style: TextStyle(fontSize: 20),
-//      ),
-//      onPressed: () {
-//        Future.delayed(
-//          Duration(seconds: 3),
-//              () => 'Sunshine',
-//        );
-//      },
-//    );
-//  }
-}
 
 class BuyScreen extends StatelessWidget {
   // Map containing all the flavours info: Name, Description, Color and Image Location
@@ -243,27 +172,3 @@ class BuyScreen extends StatelessWidget {
   }
 }
 
-//class Person extends StatelessWidget {
-//  final String firstName;
-//  final String lastName;
-//  Person({this.firstName, this.lastName});
-//  @override
-//  Widget build(BuildContext context) {
-//    return Text(
-//      '$firstName $lastName',
-//      textDirection: TextDirection.ltr,
-//    );
-//  }
-//}
-//
-//
-//
-//class Cake extends StatelessWidget {
-//  Widget build(BuildContext context) {
-//    return Icon(
-//      Icons.cake,
-//      textDirection: TextDirection.ltr,
-//      size: 200,
-//    );
-//  }
-//}
