@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttersandpit/countries_model.dart';
 import 'package:fluttersandpit/networking.dart';
+import 'package:provider/provider.dart';
 
 const apiKey = 'cd83fb5dfa20b2cbed7125ed4992d7a9';
 const openWeatherMapUrl = 'https://api.openweathermap.org/data/2.5/weather';
@@ -9,6 +11,36 @@ class Weather {
   String description;
 
   Weather(this.temperature, this.description);
+}
+
+showAlertDialog(BuildContext context) {
+  // set up the button
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Last Tapped"),
+    content: Consumer<CountriesModel>(
+      builder: (context, country, _) => Text(
+          "The last country tapped was: ${country.lastTappedCountry.name ?? country.lastTappedCountry.code}"),
+    ),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
 
 class WeatherScreen extends StatefulWidget {
@@ -90,39 +122,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
               }
             },
           ),
+          FlatButton(
+            child: Text(
+              "check last tapped country",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+            onPressed: () {
+              showAlertDialog(context);
+            },
+          )
         ],
       ),
     );
   }
 }
-
-// BUTTON CODE - ADD LATER - FIND A WAY TO TRIGGER FUTUREBUILDER FROM THIS BUTTON
-//    return FlatButton(
-//      child: Text(
-//        'Check Weather',
-//        style: TextStyle(fontSize: 20),
-//      ),
-//      onPressed: () {
-//        Future.delayed(
-//          Duration(seconds: 3),
-//          () => 'Sunshine',
-//        );
-//      },
-//    );
-//  }
-
-//  @override
-//  Widget build(BuildContext context) {
-//    return FlatButton(
-//      child: Text(
-//        'Check Weather',
-//        style: TextStyle(fontSize: 20),
-//      ),
-//      onPressed: () {
-//        Future.delayed(
-//          Duration(seconds: 3),
-//              () => 'Sunshine',
-//        );
-//      },
-//    );
-//  }

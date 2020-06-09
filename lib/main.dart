@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttersandpit/countries_model.dart';
 import 'package:fluttersandpit/weather_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fluttersandpit/home_screen.dart';
+import 'package:provider/provider.dart';
 import 'aq_screen.dart';
 import 'buy_screen.dart';
 
@@ -12,9 +14,12 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MainWidget(),
-      title: "My favourite ice creams",
+    return ChangeNotifierProvider(
+      builder: (context) => CountriesModel(),
+      child: MaterialApp(
+        home: MainWidget(),
+        title: "My favourite ice creams",
+      ),
     );
   }
 }

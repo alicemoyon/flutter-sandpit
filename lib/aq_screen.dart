@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttersandpit/countries_model.dart';
 import 'package:fluttersandpit/country_info_screen.dart';
+import 'package:provider/provider.dart';
 import 'country.dart';
 import 'networking.dart';
 
@@ -34,6 +36,8 @@ class AqScreen extends StatefulWidget {
 class _AqScreenState extends State<AqScreen> {
 
   final Future<List> countries = AqScreen.getCountries();
+
+  //String lastTappedCountry;
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +87,7 @@ class _AqScreenState extends State<AqScreen> {
                                   CountryInfoScreen(snapshot.data[index]),
                             ),
                           );
+                          Provider.of<CountriesModel>(context, listen: false).tapCountry(snapshot.data[index]);
                         },
                       );
                     } else {

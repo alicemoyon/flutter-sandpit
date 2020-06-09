@@ -87,21 +87,3 @@ class IceCreamSelectionState extends State<IceCreamSelection> {
   }
 }
 
-//class IceCreamSelection extends StatefulWidget {
-//  @override
-//  _IceCreamSelectionState createState() => _IceCreamSelectionState();
-//}
-//
-//class _IceCreamSelectionState extends State<IceCreamSelection> {
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Column(
-//      children: <Widget>[
-//        IceCreamDropdown(),
-//        Image.asset(
-//            "assets/images/$_selectedFlavour.jpg"),
-//      ],
-//    );
-//  }
-//}
