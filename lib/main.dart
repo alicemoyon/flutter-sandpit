@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fluttersandpit/flavourcard.dart';
 import 'package:fluttersandpit/homescreen.dart';
+import 'aq_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,7 +22,7 @@ class MainWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           leading: Center(
@@ -37,6 +38,7 @@ class MainWidget extends StatelessWidget {
             HomeScreen(),
             WeatherScreen(),
             BuyScreen(),
+            AqScreen(),
           ],
         ),
         bottomNavigationBar: myBottomNavBar(),
@@ -62,6 +64,10 @@ Widget myBottomNavBar() {
           FontAwesomeIcons.iceCream,
         ),
         child: Text('Buy'),
+      ),
+      Tab(
+        icon: Icon(Icons.map),
+        child: Text('countries'),
       ),
     ]),
   );
@@ -108,36 +114,7 @@ class WeatherScreen extends StatelessWidget {
     );
   }
 
-  // BUTTON CODE - ADD LATER - FIND A WAY TO TRIGGER FUTUREBUILDER FROM THIS BUTTON
-//    return FlatButton(
-//      child: Text(
-//        'Check Weather',
-//        style: TextStyle(fontSize: 20),
-//      ),
-//      onPressed: () {
-//        Future.delayed(
-//          Duration(seconds: 3),
-//          () => 'Sunshine',
-//        );
-//      },
-//    );
-//  }
 
-//  @override
-//  Widget build(BuildContext context) {
-//    return FlatButton(
-//      child: Text(
-//        'Check Weather',
-//        style: TextStyle(fontSize: 20),
-//      ),
-//      onPressed: () {
-//        Future.delayed(
-//          Duration(seconds: 3),
-//              () => 'Sunshine',
-//        );
-//      },
-//    );
-//  }
 }
 
 class BuyScreen extends StatelessWidget {
