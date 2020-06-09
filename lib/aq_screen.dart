@@ -34,7 +34,6 @@ class AqScreen extends StatefulWidget {
 }
 
 class _AqScreenState extends State<AqScreen> {
-
   final Future<List> countries = AqScreen.getCountries();
 
   //String lastTappedCountry;
@@ -72,7 +71,12 @@ class _AqScreenState extends State<AqScreen> {
                       return ListTile(
                         title: Text(snapshot.data[index].name),
                         trailing: FlatButton(
-                          child: Icon(snapshot.data[index].getFave() ? Icons.favorite : Icons.favorite_border, color: Colors.red,),
+                          child: Icon(
+                            snapshot.data[index].getFave()
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: Colors.red,
+                          ),
                           onPressed: () {
                             setState(() {
                               snapshot.data[index].toggleFave();
@@ -87,14 +91,20 @@ class _AqScreenState extends State<AqScreen> {
                                   CountryInfoScreen(snapshot.data[index]),
                             ),
                           );
-                          Provider.of<CountriesModel>(context, listen: false).tapCountry(snapshot.data[index]);
+                          Provider.of<CountriesModel>(context, listen: false)
+                              .tapCountry(snapshot.data[index]);
                         },
                       );
                     } else {
                       return ListTile(
                         title: Text(snapshot.data[index].code),
                         trailing: FlatButton(
-                          child: Icon(snapshot.data[index].getFave() ? Icons.favorite : Icons.favorite_border, color: Colors.red,),
+                          child: Icon(
+                            snapshot.data[index].getFave()
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: Colors.red,
+                          ),
                           onPressed: () {
                             setState(() {
                               snapshot.data[index].toggleFave();
@@ -109,6 +119,8 @@ class _AqScreenState extends State<AqScreen> {
                                   CountryInfoScreen(snapshot.data[index]),
                             ),
                           );
+                          Provider.of<CountriesModel>(context, listen: false)
+                              .tapCountry(snapshot.data[index]);
                         },
                       );
                     }
