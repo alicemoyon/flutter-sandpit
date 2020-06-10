@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttersandpit/service/web_service.dart';
-
+import 'package:fluttersandpit/utils/constants.dart';
 import 'data/country.dart';
 import 'navigation.dart';
+import 'package:fluttersandpit/service/networkhelper.dart';
 
 class AqScreen extends StatelessWidget {
   @override
@@ -11,44 +11,15 @@ class AqScreen extends StatelessWidget {
   }
 }
 
-////////////////////////
-//Navigation
-//class SecondRoute extends StatelessWidget {
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      appBar: AppBar(
-//        title: Text("Second Route"),
-//      ),
-//      body: Center(
-//        child: RaisedButton(
-//          onPressed: () {
-//            Navigator.pop(context);
-//          },
-//          child: Text('Go back!'),
-//        ),
-//      ),
-//    );
-//  }
-//}
-
-//Navigation^
-
 class CountryList extends StatefulWidget {
   @override
   createState() => CountryListState();
 }
 
 class CountryListState extends State<CountryList> {
-  // static vars
-
-  // instance vars
-  //  public
-  //  private
-
   List<Country> _countries = List<Country>();
-
-  Future _loadData = NetworkHelper(url);
+  static final nh = NetworkHelper(Constants.Countries_API);
+  Future _loadData = nh.getData();
 
   @override
   Widget build(BuildContext context) {
@@ -57,21 +28,25 @@ class CountryListState extends State<CountryList> {
       future: _loadData,
       // ignore: missing_return
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.error)
+        if (snapshot.hasError) {
+          //If error
           return Center(
             child: Text('${snapshot.error}'),
           );
+        }
         switch (snapshot.connectionState) {
-          case ConnectionState.none:
+          case ConnectionState.none: //If no data
             return Center(
               child: Text('No connection'),
             );
-          case ConnectionState.waiting:
+          case ConnectionState.waiting: //If waiting
             return Center(child: CircularProgressIndicator());
           case ConnectionState.active:
-          case ConnectionState.done:
-            _countries = snapshot.data;
-
+          case ConnectionState.done: //If finished
+            _countries = [];
+            for (var i = 0; i < snapshot.data['results'].length; i++) {
+              _countries.add(Country.fromJson(snapshot.data['results'][i]));
+            }
             return ListView.builder(
               itemCount: _countries.length,
               itemBuilder: _buildItemsForListView,
@@ -81,25 +56,9 @@ class CountryListState extends State<CountryList> {
     ));
   }
 
-//  void _populateCountries() {
-//    Webservice().load(Country.all).then((countries) => {
-//          setState(() => {_countries = countries})
-//        });
-//  }
-
   ListTile _buildItemsForListView(BuildContext context, int index) {
     return ListTile(
         title: RaisedButton(
-      //dialog box
-//      onPressed: () => _showDialog(
-//        _countries,
-//        _countries[index].name,
-//          _countries[index].code,
-//          _countries[index].locations,
-//          _countries[index].cities,
-//        _countries[index].count,
-//      ),
-      // navigation
       onPressed: () {
         Navigator.push(
           context,
@@ -116,37 +75,5 @@ class CountryListState extends State<CountryList> {
       child: Text(_countries[index].name ?? 'NAME N/A',
           style: TextStyle(fontSize: 18)),
     ));
-  }
-
-  //////ALERT
-  void _showDialog(
-    array,
-    name,
-    code,
-    locations,
-    cities,
-    count,
-  ) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text(name),
-          content: new Text("Code: $code"
-              "\n Locations: $locations"
-              "\n Cities: $cities"
-              "\n Count: $count"),
-          actions: <Widget>[
-            //
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }

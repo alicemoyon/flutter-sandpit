@@ -31,8 +31,6 @@ class Webservice {
         parse: (response) {
           final result = json.decode(response.body);
           Iterable list = result['results'];
-          print("HELLO");
-          print("result: ${result['results']}");
           return list.map((model) => Country.fromJson(model)).toList();
         });
   }
