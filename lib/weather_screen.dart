@@ -26,14 +26,6 @@ showAlertDialog(BuildContext context) {
   AlertDialog alert = AlertDialog(
     title: Text("Last Tapped"),
     content: Consumer<CountriesModel>(
-      /// TODO maybe try an if/else here to deal with case when no country was tapped?
-      /// Yes, exactly, we would need to do that here...
-      ///
-      /// However, what if we wanted to prevent the user from getting here in case there's nothing
-      /// to show in the "Last Tapped" dialog?
-      ///
-      /// Give it a try: spend max half an hour, see if you can get that to work.
-      /// When you're done, or time ran out, consult our document for further instructions :)
       builder: (context, country, _) => Text(
           "The last country tapped was: ${country.lastTappedCountry.name ?? country.lastTappedCountry.code}"),
     ),
@@ -130,17 +122,23 @@ class _WeatherScreenState extends State<WeatherScreen> {
               }
             },
           ),
-          FlatButton(
-            child: Text(
-              "check last tapped country",
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-            onPressed: () {
-              showAlertDialog(context);
-            },
-          )
+          Consumer<CountriesModel>(
+            builder: (context, country, _) {
+              // Only show button if a country has been tapped
+              if (country.lastTappedCountry != null)
+                return FlatButton(
+                  child: Text(
+                    "check last tapped country",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  onPressed: () {
+                    showAlertDialog(context);
+                  },
+                );
+              else return Container(width: 0.0, height: 0.0);
+            },),
         ],
       ),
     );
