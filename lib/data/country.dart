@@ -13,6 +13,16 @@ class Country {
     this.count,
   });
 
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'code': code,
+      'locations': locations,
+      'cities': cities,
+      'count': count,
+    };
+  }
+
 //don't touch, correct! Only call
   factory Country.fromJson(Map<String, dynamic> json) {
     return Country(
