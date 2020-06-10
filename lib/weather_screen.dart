@@ -26,7 +26,14 @@ showAlertDialog(BuildContext context) {
   AlertDialog alert = AlertDialog(
     title: Text("Last Tapped"),
     content: Consumer<CountriesModel>(
-      //TODO maybe try an if/else here to deal with case when no country was tapped?
+      /// TODO maybe try an if/else here to deal with case when no country was tapped?
+      /// Yes, exactly, we would need to do that here...
+      ///
+      /// However, what if we wanted to prevent the user from getting here in case there's nothing
+      /// to show in the "Last Tapped" dialog?
+      ///
+      /// Give it a try: spend max half an hour, see if you can get that to work.
+      /// When you're done, or time ran out, consult our document for further instructions :)
       builder: (context, country, _) => Text(
           "The last country tapped was: ${country.lastTappedCountry.name ?? country.lastTappedCountry.code}"),
     ),
