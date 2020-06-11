@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fluttersandpit/countries_model.dart';
+import 'package:fluttersandpit/countries_model_state.dart';
 import 'package:fluttersandpit/networking.dart';
 import 'package:provider/provider.dart';
+
+import 'country.dart';
 
 const apiKey = 'cd83fb5dfa20b2cbed7125ed4992d7a9';
 const openWeatherMapUrl = 'https://api.openweathermap.org/data/2.5/weather';
@@ -122,23 +127,52 @@ class _WeatherScreenState extends State<WeatherScreen> {
               }
             },
           ),
-          Consumer<CountriesModel>(
-            builder: (context, country, _) {
-              // Only show button if a country has been tapped
-              if (country.lastTappedCountry != null)
-                return FlatButton(
-                  child: Text(
-                    "check last tapped country",
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  onPressed: () {
-                    showAlertDialog(context);
-                  },
-                );
-              else return Container(width: 0.0, height: 0.0);
-            },),
+          StreamBuilder(
+              stream: CountriesModel.streamController.stream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<Country> snapshot) {
+                if (snapshot.hasError)
+                  return Text("Error: ${snapshot.error.toString()}");
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return Container(width: 0.0, height: 0.0);
+                  case ConnectionState.active:
+                    return FlatButton(
+                      child: Text(
+                        "check last tapped country",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      onPressed: () {
+                        showAlertDialog(context);
+                      },
+                    );
+                  default:
+                    return Container(width: 0.0, height: 0.0);
+                }
+              }),
+
+
+
+//          Consumer<CountriesModel>(
+//            builder: (context, country, _) {
+//              // Only show button if a country has been tapped
+//              if (country.lastTappedCountry != null)
+//                return FlatButton(
+//                  child: Text(
+//                    "check last tapped country",
+//                    style: TextStyle(
+//                      fontSize: 20,
+//                    ),
+//                  ),
+//                  onPressed: () {
+//                    showAlertDialog(context);
+//                  },
+//                );
+//              else return Container(width: 0.0, height: 0.0);
+//            },),
         ],
       ),
     );
